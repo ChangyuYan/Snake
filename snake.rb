@@ -6,6 +6,8 @@ set fps_cap: 15
 # width = 640 / 20 = 32
 # height = 480 / 20 = 24
 
+set width: 640, height: 480 # Note: This line is option since the value is same as default 
+
 GRID_SIZE = 20
 GRID_WIDTH = Window.width / GRID_SIZE
 GRID_HEIGHT = Window.height / GRID_SIZE
