@@ -2,11 +2,13 @@ require "ruby2d"
 
 set background: "navy"
 set fps_cap: 15
+set title: "SNAKE"
 
 # width = 640 / 20 = 32
 # height = 480 / 20 = 24
 
-set width: 640, height: 480 # Note: This line is option since the value is same as default 
+
+set width: 640, height: 480 # Note: This line is option since the value is same as default
 
 GRID_SIZE = 20
 GRID_WIDTH = Window.width / GRID_SIZE
@@ -85,17 +87,63 @@ class Snake
 end
 
 
-
 class Game
     def initialize
         @score = 0
         @ball_x = rand(GRID_WIDTH)
         @ball_y = rand(GRID_HEIGHT)
         @finished = false
+        @started = false
     end
 
-    def draw
-        unless finished?
+    def draw_intro
+        Text.new(
+          'SNAKE',
+          x: Window.width / 2 - 75,
+          y: Window.height / 2 - 200,
+          size: 40,
+          color: 'white',
+        )
+
+        # START Button
+        Rectangle.new(
+          x: 100,
+          y: Window.height - 200,
+          width: 150, height: 60,
+          color: 'green',
+          z: 20
+        )
+
+        Text.new(
+          'START',
+          x: 110,
+          y: Window.height - 200,
+          size: 40,
+          color: 'white',
+          z: 50
+        )
+
+        # QUIT button
+        Rectangle.new(
+          x: Window.width - 270,
+          y: Window.height - 200,
+          width: 150, height: 60,
+          color: 'red',
+          z: 20
+        )
+
+        Text.new(
+          'QUIT',
+          x: Window.width - 245,
+          y: Window.height - 200,
+          size: 40,
+          color: 'white',
+          z: 50
+        )
+    end
+
+    def draw_game
+        if started? && !finished?
             Square.new(x: @ball_x * GRID_SIZE, y: @ball_y * GRID_SIZE, size: GRID_SIZE, color: "yellow")
         end
 
@@ -120,6 +168,14 @@ class Game
         @finished
     end
 
+    def start
+        @started = true
+    end
+
+    def started?
+        @started
+    end
+
     private
 
     def text_message
@@ -138,21 +194,43 @@ game = Game.new
 update do
     clear
 
-    unless game.finished?
+    if !game.started?
+        game.draw_intro
+    end
+
+    if game.started? and !game.finished?
         snake.move
     end
-    snake.draw
-    game.draw
 
-    if game.snake_hit_ball?(snake.x, snake.y)
-        game.record_hit
-        snake.grow
+    if game.started?
+        snake.draw
+        game.draw_game
+
+        if game.snake_hit_ball?(snake.x, snake.y)
+            game.record_hit
+            snake.grow
+        end
+
+        if snake.hit_itself?
+            game.finish
+        end
     end
 
-    if snake.hit_itself?
-        game.finish
-    end
 end
+
+on :mouse_down do |event|
+  # x and y coordinates of the mouse button event
+  if !game.started?
+      if 100 < event.x and event.x < 250 and Window.height - 200 < event.y and event.y < Window.height - 140 then
+          puts "start"
+          game.start
+      elsif Window.width - 270 < event.x and event.x < Window.width - 120 and Window.height - 200 < event.y and event.y < Window.height - 140 then
+          puts "QUIT"
+          close
+      end
+  end
+end
+
 
 on :key_down do |event|
     if ["up", "down", "left", "right"].include?(event.key)
