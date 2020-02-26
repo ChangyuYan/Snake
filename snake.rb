@@ -1,7 +1,7 @@
 require "ruby2d"
 
 set background: "navy"
-set fps_cap: 15
+set fps_cap: 20
 set title: "SNAKE"
 
 # width = 640 / 20 = 32
@@ -97,12 +97,14 @@ class Game
     end
 
     def draw_intro
+
         Text.new(
-          'SNAKE',
-          x: Window.width / 2 - 75,
-          y: Window.height / 2 - 200,
-          size: 40,
-          color: 'white',
+            'START              QUIT',
+            x: 110,
+            y: Window.height - 200,
+            size: 40,
+            color: 'white',
+            z: 50
         )
 
         # START Button
@@ -114,15 +116,6 @@ class Game
           z: 20
         )
 
-        Text.new(
-          'START',
-          x: 110,
-          y: Window.height - 200,
-          size: 40,
-          color: 'white',
-          z: 50
-        )
-
         # QUIT button
         Rectangle.new(
           x: Window.width - 270,
@@ -132,14 +125,6 @@ class Game
           z: 20
         )
 
-        Text.new(
-          'QUIT',
-          x: Window.width - 245,
-          y: Window.height - 200,
-          size: 40,
-          color: 'white',
-          z: 50
-        )
     end
 
     def draw_game
